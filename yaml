@@ -1,0 +1,52 @@
+name: exam_secure
+description: Aplicativo seguro para aplicação de provas digitais
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Gerenciamento de estado
+  provider: ^6.1.1
+  
+  # Requisições HTTP
+  dio: ^5.4.0
+  
+  # Visualização de PDF
+  syncfusion_flutter_pdfviewer: ^24.2.3
+  
+  # Armazenamento seguro
+  flutter_secure_storage: ^9.0.0
+  
+  # Detecção de captura de tela
+  screenshot_callback: ^1.0.2
+  
+  # Detecção de mudança de app
+  flutter_app_lock: ^2.1.0
+  
+  # Timer e background
+  flutter_background_service: ^5.0.5
+  
+  # Armazenamento local
+  shared_preferences: ^2.2.2
+  
+  # Criptografia
+  crypto: ^3.0.3
+  
+  # Permissões
+  permission_handler: ^11.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  
+  assets:
+    - assets/images/
+    - assets/pdf/
