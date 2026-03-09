@@ -49,15 +49,21 @@ class SecurityService extends ChangeNotifier {
   List<FraudAttempt> get fraudLog => List.unmodifiable(_fraudLog);
 
   void _initializeSecurity() {
-    // Inicializar callback de screenshot
-    _screenshotCallback = ScreenshotCallback()
-      ..addListener(() {
-        if (_isExamActive) {
-          _registerFraud(FraudType.screenshot, 'Captura de tela detectada');
-        }
-      });
+    // Alguns plugins não suportam web; ignoramos nesses casos.
+    try {
+      // Inicializar callback de screenshot (somente em plataformas móveis)
+      _screenshotCallback = ScreenshotCallback()
+        ..addListener(() {
+          if (_isExamActive) {
+            _registerFraud(FraudType.screenshot, 'Captura de tela detectada');
+          }
+        });
+    } catch (_) {
+      // ignore: avoid_print
+      print('ScreenshotCallback não disponível nesta plataforma');
+    }
 
-    // Inicializar serviço em background
+    // Inicializar serviço em background (pode ser tratado internamente)
     _initializeBackgroundService();
   }
 
@@ -144,20 +150,26 @@ class SecurityService extends ChangeNotifier {
 
   // Inicializar serviço em background
   void _initializeBackgroundService() async {
-    final service = FlutterBackgroundService();
+    try {
+      final service = FlutterBackgroundService();
 
-    await service.configure(
-      iosConfiguration: IosConfiguration(
-        autoStart: false,
-        onForeground: (service) {},
-        onBackground: _onIosBackground,
-      ),
-      androidConfiguration: AndroidConfiguration(
-        autoStart: false,
-        onStart: _onStart,
-        isForegroundMode: true,
-      ),
-    );
+      await service.configure(
+        iosConfiguration: IosConfiguration(
+          autoStart: false,
+          onForeground: (service) {},
+          onBackground: _onIosBackground,
+        ),
+        androidConfiguration: AndroidConfiguration(
+          autoStart: false,
+          onStart: _onStart,
+          isForegroundMode: true,
+        ),
+      );
+    } catch (e) {
+      // On unsupported platforms (e.g. tests, web) the plugin may throw.
+      // We can safely ignore failures during initialization as background
+      // service isn't needed for widget tests or non-mobile targets.
+    }
   }
 
   @pragma('vm:entry-point')

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,19 +13,23 @@ import 'utils/app_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Inicializar serviços de segurança
   final securityService = SecurityService();
   await securityService.initialize();
-  
-  // Verificar permissões necessárias
-  await _checkPermissions();
-  
+
+  // Verificar permissões necessárias (somente em plataformas móveis)
+  if (!kIsWeb) {
+    await _checkPermissions();
+  }
+
   runApp(MyApp(securityService: securityService));
 }
 
 Future<void> _checkPermissions() async {
-  // Solicitar permissões necessárias
+  // Apenas dispositivos móveis precisam de permissões; evita erros no web
+  if (kIsWeb) return;
+
   await [
     Permission.storage,
     Permission.photos,
@@ -33,7 +38,7 @@ Future<void> _checkPermissions() async {
 
 class MyApp extends StatelessWidget {
   final SecurityService securityService;
-  
+
   const MyApp({super.key, required this.securityService});
 
   @override
@@ -42,7 +47,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => securityService),
         Provider(create: (_) => ApiService()),
-        Provider(create: (_) => FlutterSecureStorage()),
+        Provider(create: (_) => const FlutterSecureStorage()),
       ],
       child: MaterialApp(
         title: AppConstants.appName,
