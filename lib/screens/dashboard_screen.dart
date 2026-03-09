@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../models/exam.dart';
 import '../services/api_service.dart';
 import '../services/security_service.dart';
-import '../utils/app_constants.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -32,7 +31,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       final apiService = Provider.of<ApiService>(context, listen: false);
       final exam = await apiService.getAvailableExam();
-      
+
       setState(() {
         _availableExam = exam;
       });
@@ -50,8 +49,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _startExam() async {
     if (_availableExam == null) return;
 
-    final securityService = Provider.of<SecurityService>(context, listen: false);
-    
+    final securityService =
+        Provider.of<SecurityService>(context, listen: false);
+
     // Verificar se o aluno não está bloqueado
     if (securityService.isBlocked) {
       _showBlockedDialog();
@@ -59,14 +59,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     final apiService = Provider.of<ApiService>(context, listen: false);
-    
+
     try {
       final started = await apiService.startExam(_availableExam!.id);
-      
+
       if (started && mounted) {
         // Iniciar monitoramento de segurança
         securityService.startExamMonitoring(_availableExam!.id);
-        
+
         // Navegar para tela da prova
         Navigator.pushNamed(
           context,
@@ -190,8 +190,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Text(
             'Nenhuma prova disponível',
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.grey[600],
-            ),
+                  color: Colors.grey[600],
+                ),
           ),
           const SizedBox(height: 8),
           Text(
@@ -205,7 +205,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildExamCard() {
     final exam = _availableExam!;
-    
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
@@ -258,9 +258,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Informações da prova
               _buildInfoRow(
                 icon: Icons.timer,
@@ -279,14 +279,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 label: 'Disponível até',
                 value: _formatDateTime(exam.endTime),
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Divisor
               const Divider(),
-              
+
               const SizedBox(height: 16),
-              
+
               // Status da prova
               Row(
                 children: [
@@ -296,7 +296,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: exam.isAvailable ? Colors.green.shade50 : Colors.red.shade50,
+                      color: exam.isAvailable
+                          ? Colors.green.shade50
+                          : Colors.red.shade50,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -320,9 +322,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
-              
+
               // Botão de iniciar
               SizedBox(
                 width: double.infinity,

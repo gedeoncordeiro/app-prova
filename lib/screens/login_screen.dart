@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/api_service.dart';
-import '../services/security_service.dart';
 import '../utils/app_constants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -46,31 +45,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: Colors.blue,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Título
                   Text(
                     AppConstants.appName,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   Text(
                     'Plataforma de Provas Digitais',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: Colors.grey[600],
-                    ),
+                          color: Colors.grey[600],
+                        ),
                   ),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Campo de matrícula/email
                   TextFormField(
                     controller: _credentialController,
@@ -91,9 +90,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Campo de senha
                   TextFormField(
                     controller: _passwordController,
@@ -103,7 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                          _obscurePassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                         onPressed: () {
                           setState(() {
@@ -124,9 +125,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   // Mensagem de erro
                   if (_errorMessage != null)
                     Container(
@@ -141,9 +142,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Botão de login
                   ElevatedButton(
                     onPressed: _isLoading ? null : _handleLogin,
@@ -159,17 +160,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 20,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
                             ),
                           )
                         : const Text(
                             'ENTRAR',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Link para recuperar senha
                   TextButton(
                     onPressed: () {
@@ -188,19 +191,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
     });
-    
+
     try {
       final apiService = Provider.of<ApiService>(context, listen: false);
-      final response = await apiService.login(
+      await apiService.login(
         _credentialController.text,
         _passwordController.text,
       );
-      
+
       if (mounted) {
         // Login bem-sucedido
         Navigator.pushReplacementNamed(context, '/dashboard');

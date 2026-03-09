@@ -22,10 +22,10 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   
   # Detecção de captura de tela
-  screenshot_callback: ^1.0.2
+  screenshot_callback: ^3.0.1
   
   # Detecção de mudança de app
-  flutter_app_lock: ^2.1.0
+  flutter_app_lock: ^4.3.0
   
   # Timer e background
   flutter_background_service: ^5.0.5

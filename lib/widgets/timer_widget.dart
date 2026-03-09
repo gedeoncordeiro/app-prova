@@ -43,7 +43,6 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   void _checkTimeStatus() {
-    final totalDuration = widget.duration;
     final remaining = _remainingSeconds;
 
     // Aviso quando restam 5 minutos

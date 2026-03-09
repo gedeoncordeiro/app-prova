@@ -49,7 +49,7 @@ class _ExamScreenState extends State<ExamScreen> {
     if (_answers.isEmpty) return;
 
     final apiService = Provider.of<ApiService>(context, listen: false);
-    
+
     for (var entry in _answers.entries) {
       final answer = Answer(
         questionId: entry.key,
@@ -101,7 +101,8 @@ class _ExamScreenState extends State<ExamScreen> {
     });
 
     try {
-      final securityService = Provider.of<SecurityService>(context, listen: false);
+      final securityService =
+          Provider.of<SecurityService>(context, listen: false);
       final apiService = Provider.of<ApiService>(context, listen: false);
 
       // Criar lista de respostas
@@ -129,7 +130,7 @@ class _ExamScreenState extends State<ExamScreen> {
       if (success && mounted) {
         // Parar monitoramento
         securityService.stopExamMonitoring();
-        
+
         // Cancelar timer
         _autoSaveTimer?.cancel();
 
@@ -183,6 +184,9 @@ class _ExamScreenState extends State<ExamScreen> {
     final securityService = Provider.of<SecurityService>(context);
     final currentQuestion = _exam.questions[_currentQuestionIndex];
 
+    // O widget WillPopScope está depreciado, mas PopScope
+    // ainda não possui o parâmetro onWillPop na versão atual do SDK.
+    // Mantemos o uso antigo para compatibilidade.
     return WillPopScope(
       onWillPop: () async {
         // Bloquear botão de voltar durante a prova
@@ -207,8 +211,10 @@ class _ExamScreenState extends State<ExamScreen> {
                   // Progresso
                   LinearProgressIndicator(
                     value: (_currentQuestionIndex + 1) / _exam.questions.length,
-                    backgroundColor: Colors.grey[300],
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                    // ignore: deprecated_member_use
+                    backgroundColor: Colors.grey.withOpacity(0.3),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.blue),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -233,7 +239,7 @@ class _ExamScreenState extends State<ExamScreen> {
                           _handleAnswerSelected(currentQuestion.id, answer),
                     ),
                   ),
-                  
+
                   // Navegação
                   Container(
                     padding: const EdgeInsets.all(16),
@@ -243,6 +249,7 @@ class _ExamScreenState extends State<ExamScreen> {
                         BoxShadow(
                           offset: const Offset(0, -2),
                           blurRadius: 4,
+                          // ignore: deprecated_member_use
                           color: Colors.grey.withOpacity(0.1),
                         ),
                       ],
@@ -264,7 +271,7 @@ class _ExamScreenState extends State<ExamScreen> {
                           ),
                         ),
                         const SizedBox(width: 16),
-                        
+
                         // Botão próximo/enviar
                         Expanded(
                           child: ElevatedButton(
@@ -276,7 +283,8 @@ class _ExamScreenState extends State<ExamScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
                             child: Text(
-                              _currentQuestionIndex == _exam.questions.length - 1
+                              _currentQuestionIndex ==
+                                      _exam.questions.length - 1
                                   ? 'ENVIAR'
                                   : 'PRÓXIMO',
                             ),

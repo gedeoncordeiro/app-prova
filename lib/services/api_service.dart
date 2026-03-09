@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/exam.dart';
@@ -8,7 +7,7 @@ import '../utils/app_constants.dart';
 class ApiService {
   late Dio _dio;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  
+
   ApiService() {
     _dio = Dio(BaseOptions(
       baseUrl: AppConstants.apiBaseUrl,
@@ -19,7 +18,7 @@ class ApiService {
         'Accept': 'application/json',
       },
     ));
-    
+
     // Interceptor para adicionar token de autenticação
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) async {
@@ -46,11 +45,12 @@ class ApiService {
         'credential': credential,
         'password': password,
       });
-      
+
       if (response.statusCode == 200) {
         final data = response.data;
         await _storage.write(key: 'auth_token', value: data['token']);
-        await _storage.write(key: 'student_id', value: data['student_id'].toString());
+        await _storage.write(
+            key: 'student_id', value: data['student_id'].toString());
         return data;
       }
       throw Exception('Falha no login');
@@ -64,7 +64,7 @@ class ApiService {
     try {
       final studentId = await _storage.read(key: 'student_id');
       final response = await _dio.get('/student/$studentId/exams/available');
-      
+
       if (response.statusCode == 200 && response.data != null) {
         return Exam.fromJson(response.data);
       }
@@ -83,7 +83,7 @@ class ApiService {
         'exam_id': examId,
         'start_time': DateTime.now().toIso8601String(),
       });
-      
+
       return response.statusCode == 200;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -101,7 +101,7 @@ class ApiService {
         'answer': answer.answer,
         'timestamp': answer.timestamp.toIso8601String(),
       });
-      
+
       return response.statusCode == 200;
     } on DioException catch (e) {
       throw _handleError(e);
@@ -111,7 +111,8 @@ class ApiService {
   // Enviar prova completa
   Future<bool> submitExam(ExamSubmission submission) async {
     try {
-      final response = await _dio.post('/exam/submit', data: submission.toJson());
+      final response =
+          await _dio.post('/exam/submit', data: submission.toJson());
       return response.statusCode == 200;
     } on DioException catch (e) {
       throw _handleError(e);
